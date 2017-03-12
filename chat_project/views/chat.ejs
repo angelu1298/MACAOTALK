@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <style>
+		body{margin:0;padding:0;font-family:'Nanum Pen Script', serif;font-size:20px;}
+		#head{border:1px solid red;padding-top:10px;padding-bottom:10px;padding-left:10px;background:#f86977;color:white;
+				}
+		#head > img {padding-right:20px}
+		#lobby > ul {padding:0;margin:0 }
+		#lobby > ul > li{border:1px solid black;margin:10px;padding:10px;background:pink;color:#787878;list-style:none}
+		#send{float:right;padding-right:20px}
+		#lobby{background:white;width:229px; height:330px;}
+		#show{position:fixed;bottom:0px; left:0; background:black;color:white;font-family:'Nanum Pen Script', serif;font-size:20px; }
+		#messagearea{position:fixed;bottom:30px;}
+		.macaotalkview{position:fixed;bottom:0px;}
+    </style>
+</head>
+
+<body>
+<div class="messageBody">
+	<div id="head"><img src="#" />마카오 톡 </div>
+	<div id="lobby">
+		<ul id="messageShow">
+		</ul>
+	</div>
+	<div id="messagearea">
+		<input type="text" id="message" />
+		<input type="button" id="send" value="전송" />
+	</div>
+</div>
+<input type="button" class="macaotalkview" value="MACAOTALK" />
+
+<script type="text/javascript" src="http://cdn.socket.io/socket.io-1.4.0.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<script>
+
+	 
+    var serverURL = 'localhost:50000';
+	var getParameter = function (param) {
+
+		var returnValue;
+		var url = location.href;
+		var parameters = (url.slice(url.indexOf('?') + 1, url.length)).split('&');
+			for (var i = 0; i < parameters.length; i++) {
+				var varName = parameters[i].split('=')[0];
+					if (varName.toUpperCase() == param.toUpperCase()) {
+						returnValue = parameters[i].split('=')[1];
+						return decodeURIComponent(returnValue);
+					}
+				}
+	};
+    var name = ''
+    if(getParameter("mem_id")!=undefined){
+    	name = getParameter("mem_id");
+    }
+    var room = '100';
+
+    var socket = null;
+	
+	
+    
+    function writeMessage(type, name, message) {
+        var html = '<div>{MESSAGE}</div>';
+
+        var printName = '';
+        printName = name + ' : ';
+        
+        html = html.replace('{MESSAGE}', printName + message);
+
+        $(html).appendTo('#messageShow');
+        $('body').stop();
+        $('body').animate({scrollTop:$('body').height()}, 500);
+
+    }
+
+    function sender(text) {
+
+        socket.emit('user', {
+            name : name,
+            message : text
+        });
+
+        writeMessage('me', name, text);
+    }
+
+    $(document).ready(function() {
+    	
+    	$('.messageBody').hide();
+    	
+    	$('.macaotalkview').on('click',function(){
+	    	$('.messageBody').toggle();
+	    	
+    	})
+        socket = io.connect(serverURL);
+
+        socket.on('connection', function(data) {
+            console.log('connect');
+            if(data.type === 'connected' && name!= '') {
+                socket.emit('connection', {
+                    type : 'join',
+                    name : name,
+                    room : room
+                });
+	 	  	 	$('#message').prop('disabled',false);
+            }else{
+	 	  	 	$('#message').val('로그인하세요');
+	 	  	 	$('#message').prop('disabled',true);
+	 	  	 }
+        });
+
+        socket.on('system', function(data) {
+            writeMessage('system', 'system', data.message);
+        });
+
+        socket.on('message', function(data) {
+            writeMessage('other', data.name, data.message);
+        });
+		
+		
+	    $('#send').click(function() {
+		
+			if(name!=''){
+		       var $input = $('#message');
+		
+		       var msg = $input.val();
+		       sender(msg);
+		       $input.val('');
+		       $input.focus();
+	
+		 	 }
+	
+	    });
+	
+	    $('#message').on('keypress', function(e) {
+			if(name!=''){
+		        if(e.keyCode === 13) {
+	
+		        var $input = $('#message');
+		
+		        var msg = $input.val();
+		        sender(msg);
+		        $input.val('');
+		        $input.focus();
+		        }
+	        }
+	    });
+	    
+	   
+    });
+
+</script>
+
+</body>
+</html>
