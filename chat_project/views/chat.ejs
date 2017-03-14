@@ -9,7 +9,10 @@
 				}
 		#head > img {padding-right:20px}
 		#lobby > ul {padding:0;margin:0 }
-		#lobby > ul > li{border:1px solid black;margin:10px;padding:10px;background:pink;color:#787878;list-style:none}
+		.me{margin:10px;padding:10px;color:#787878;list-style:none}
+		.me> p:fist-child{border:1px solid pink;margin:10px;padding:10px;background:pink;color:#787878;list-style:none}
+		.other{margin:10px;padding:10px;color:#787878;list-style:none}
+		.other> p:nth-child(2){border:1px solid pink;margin:10px;padding:10px;background:pink;color:#787878;list-style:none}
 		#send{float:right;padding-right:20px}
 		#lobby{background:white;width:229px; height:330px;}
 		#show{position:fixed;bottom:0px; left:0; background:black;color:white;font-family:'Nanum Pen Script', serif;font-size:20px; }
@@ -63,16 +66,26 @@
 	
     
     function writeMessage(type, name, message) {
-        var html = '<div>{MESSAGE}</div>';
+    	if(type=='me'){
+    	
+        var html = '<li class="me">{MESSAGE}</li>';
 
-        var printName = '';
-        printName = name + ' : ';
-        
-        html = html.replace('{MESSAGE}', printName + message);
+        html = html.replace('{MESSAGE}','<p>'+message+'</p>'+'<p>'+name+'</p>');
 
         $(html).appendTo('#messageShow');
         $('body').stop();
         $('body').animate({scrollTop:$('body').height()}, 500);
+        }
+    	if(type=='other'){
+    	
+        var html = '<li class="other">{MESSAGE}</li>';
+
+        html = html.replace('{MESSAGE}', '<p>'+name+'</p>' + '<p>'+message+'</p>');
+
+        $(html).appendTo('#messageShow');
+        $('body').stop();
+        $('body').animate({scrollTop:$('body').height()}, 500);
+        }
 
     }
 
