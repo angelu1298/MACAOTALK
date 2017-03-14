@@ -4,36 +4,40 @@
 <head>
 
     <style>
-		body{margin:0;padding:0;font-family:'Nanum Pen Script', serif;font-size:20px;}
-		#head{border:1px solid red;padding-top:10px;padding-bottom:10px;padding-left:10px;background:#f86977;color:white;
-				}
+		body{margin:0;padding:0;font-family:'Nanum Pen Script', serif;font-size:20px;overflow-x:hidden; overflow-y:auto;}
+		#head{padding-top:10px;padding-bottom:10px;padding-left:10px;background:rgba(190,35,25,1);color:white;position:fixed;top:0px;width:100%;display:block}
 		#head > img {padding-right:20px}
-		#lobby > ul {padding:0;margin:0 }
-		.me{margin:10px;padding:10px;color:#787878;list-style:none}
-		.me> p:fist-child{border:1px solid pink;margin:10px;padding:10px;background:pink;color:#787878;list-style:none}
-		.other{margin:10px;padding:10px;color:#787878;list-style:none}
-		.other> p:nth-child(2){border:1px solid pink;margin:10px;padding:10px;background:pink;color:#787878;list-style:none}
-		#send{float:right;padding-right:20px}
-		#lobby{background:white;width:229px; height:330px;}
-		#show{position:fixed;bottom:0px; left:0; background:black;color:white;font-family:'Nanum Pen Script', serif;font-size:20px; }
+		#lobby > ul {padding:0;margin:0; }
+		li{list-style:none;margin:1px;padding:1px;color:white;clear:both;display:block;}
+		p{display:inline-block}
+		.me{margin:1px;padding:1px;}
+		.me > p:nth-child(1){margin:3px;padding:5px;background:rgba(192,180,160,0.5);color:rgba(20,20,20,1);word-break:break-all;width:65%;border-radius: 5px;}
+		.me > p:nth-child(2){line-height:10px;width:20%}
+		.other{margin:1px;padding:1px;}
+		.other > p:nth-child(1){line-height:10px;width:20%}
+		.other > p:nth-child(2){margin:3px;padding:5px;background:rgba(192,180,160,0.5);color:rgba(20,20,20,1);word-break:break-all;width:65%;border-radius: 5px;}
+		#send{float:right;padding-right:20px;width:20%}
+		#lobby{background:black;width:229px; height:330px;}
 		#messagearea{position:fixed;bottom:30px;}
-		.macaotalkview{position:fixed;bottom:0px;}
+		#message{width:70%}
+		.macaotalkview{position:fixed;bottom:0px;background: url(./images/macaotalkbutton.png) no-repeat;width:96px;height:29px;border:none}
     </style>
 </head>
 
 <body>
 <div class="messageBody">
-	<div id="head"><img src="#" />마카오 톡 </div>
-	<div id="lobby">
-		<ul id="messageShow">
-		</ul>
+	<div class="messageview">
+		<div id="head"><img src="./images/chatbox.png" />마카오 톡 </div>
+		<div id="lobby">
+			<ul id="messageShow">
+			</ul>
+		</div>
 	</div>
 	<div id="messagearea">
-		<input type="text" id="message" />
-		<input type="button" id="send" value="전송" />
+		<input type="text" id="message" /><input type="button" id="send" value="전송" />
 	</div>
 </div>
-<input type="button" class="macaotalkview" value="MACAOTALK" />
+<input type="button" class="macaotalkview" />
 
 <script type="text/javascript" src="http://cdn.socket.io/socket.io-1.4.0.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -66,7 +70,15 @@
 	
     
     function writeMessage(type, name, message) {
-    	if(type=='me'){
+    	if(type=='system'){
+	    	 var html = '<li>{MESSAGE}</li>';
+	
+	        html = html.replace('{MESSAGE}',message + name);
+	
+	        $(html).appendTo('#messageShow');
+	        $('body').stop();
+	        $('body').animate({scrollTop:$('body').height()}, 500);
+    	}else if(type=='me'){
     	
         var html = '<li class="me">{MESSAGE}</li>';
 
@@ -76,7 +88,7 @@
         $('body').stop();
         $('body').animate({scrollTop:$('body').height()}, 500);
         }
-    	if(type=='other'){
+    	else{
     	
         var html = '<li class="other">{MESSAGE}</li>';
 
