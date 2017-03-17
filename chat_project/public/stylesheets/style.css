@@ -1,8 +1,20 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
 a {
   color: #00B7FF;
+}
+@font-face {
+  font-family: 'Nanum Square';
+  font-style: normal;
+  font-weight: 400;
+  src: url(font/NanumSquare.woff) format('woff'),
+}
+
+@font-face {
+  font-family: 'Nanum Pen Script';
+  font-style: normal;
+  font-weight: 400;
+  src: url(font/NanumPenScript-Regular.eot);
+  src: url(font/NanumPenScript-Regular.eot?#iefix) format('embedded-opentype'),
+       url(font/NanumPenScript-Regular.woff2) format('woff2'),
+       url(font/NanumPenScript-Regular.woff) format('woff'),
+       url(font/NanumPenScript-Regular.ttf) format('truetype');
 }

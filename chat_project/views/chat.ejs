@@ -2,43 +2,41 @@
 <html>
 
 <head>
-
-    <style>
-		body{margin:0;padding:0;font-family:'Nanum Pen Script', serif;font-size:20px;overflow-x:hidden; overflow-y:auto;}
-		#head{padding-top:10px;padding-bottom:10px;padding-left:10px;background:rgba(190,35,25,1);color:white;position:fixed;top:0px;width:100%;display:block}
-		#head > img {padding-right:20px}
-		#lobby > ul {padding:0;margin:0; }
-		li{list-style:none;margin:1px;padding:1px;color:white;clear:both;display:block;}
+   <style>
+   		* { margin:0; padding:0; border:none; }
+		body{margin:0;padding:0; width:230px; overflow-x:hidden; overflow-y:hidden;background:white;height:380px;}
+		#head{height:40px; 
+		font-family:'Nanum Square','나눔스퀘어','Nanum Barun Gothic', NanumBarunGothic,'나눔바른고딕', 'Nanum Gothic', NanumGothic,'나눔고딕',Tahoma, Geneva, sans-serif,verdana;
+		font-size:15px;font-weight:700;padding:10px; box-sizing:border-box;
+		 padding-left:10px; background:rgba(190,35,25,1);color:white;position:fixed;top:0px;width:100%;
+		 display:block;z-index:9999}
+		#head > img { float:left; margin:0 2px;  line-height:20px; height:20px;}
+		.messageBody{display:block;position:absolute; top:40px;width:100%; margin-bottom:10px;}
+		#lobby{background:black; margin:0; width:230px; height:310px; display:block;overflow-x:hidden; overflow-y:auto;}
+		#lobby > ul {padding:0; margin:0;width:210px;background:rgba(20,20,20,1);}
+		li{list-style:none;color:white;clear:both;display:block;font-size:12px; paddding:10px; margin:5px 5px; letter-spacing:-0.1px; }
 		p{display:inline-block}
-		.me{margin:1px;padding:1px;}
-		.me > p:nth-child(1){margin:3px;padding:5px;background:rgba(192,180,160,0.5);color:rgba(20,20,20,1);word-break:break-all;width:65%;border-radius: 5px;}
-		.me > p:nth-child(2){line-height:10px;width:20%}
-		.other{margin:1px;padding:1px;}
-		.other > p:nth-child(1){line-height:10px;width:20%}
-		.other > p:nth-child(2){margin:3px;padding:5px;background:rgba(192,180,160,0.5);color:rgba(20,20,20,1);word-break:break-all;width:65%;border-radius: 5px;}
-		#send{float:right;padding-right:20px;width:20%}
-		#lobby{background:black;width:229px; height:330px;}
-		#messagearea{position:fixed;bottom:30px;}
-		#message{width:70%}
-		.macaotalkview{position:fixed;bottom:0px;background: url(./images/macaotalkbutton.png) no-repeat;width:96px;height:29px;border:none}
+		.me > p:nth-child(1){margin-left:3px;padding:5px;font-family:'Nanum Barun Gothic','나눔바른고딕', NanumGothic,'나눔고딕';background:#f0f0f0;color:#232323; word-break:break-all;width:70%;border-radius: 5px;  }
+		.me > p:nth-child(2){line-height:10px;width:20%;margin-left:7px;}
+		.other > p:nth-child(1){line-height:10px;width:20%;margin-right:3px;}
+		.other > p:nth-child(2){margin:3px;padding:5px;background:#e6e6e6;font-family:'Nanum Barun Gothic','나눔바른고딕', NanumGothic,'나눔고딕';color:black;word-break:break-all;width:70%;border-radius: 5px;}
+		#messagearea{position:fixed;bottom:0px;width:100%; height:30px; display:inline-block; }
+		#message{ margin:0; padding:0 5px ; width:170px; height:30px;}
+		#send{float:right; width:50px; height:30px; line-height:30px; background:url(images/sendbutton.png);border:none}
     </style>
 </head>
 
 <body>
+<div id="head"><img src="./images/chatbox.png" /></div>
 <div class="messageBody">
-	<div class="messageview">
-		<div id="head"><img src="./images/chatbox.png" />마카오 톡 </div>
 		<div id="lobby">
 			<ul id="messageShow">
 			</ul>
 		</div>
-	</div>
-	<div id="messagearea">
-		<input type="text" id="message" /><input type="button" id="send" value="전송" />
-	</div>
 </div>
-<input type="button" class="macaotalkview" />
-
+<div id="messagearea">
+		<input type="text" id="message" /><input type="button" id="send"  />
+</div>
 <script type="text/javascript" src="http://cdn.socket.io/socket.io-1.4.0.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
@@ -73,11 +71,11 @@
     	if(type=='system'){
 	    	 var html = '<li>{MESSAGE}</li>';
 	
-	        html = html.replace('{MESSAGE}',message + name);
+	        html = html.replace('{MESSAGE}',message);
 	
 	        $(html).appendTo('#messageShow');
-	        $('body').stop();
-	        $('body').animate({scrollTop:$('body').height()}, 500);
+	        $('#lobby').stop();
+	        $('#lobby').animate({scrollTop:$('#lobby ul').height()}, 500);
     	}else if(type=='me'){
     	
         var html = '<li class="me">{MESSAGE}</li>';
@@ -85,8 +83,8 @@
         html = html.replace('{MESSAGE}','<p>'+message+'</p>'+'<p>'+name+'</p>');
 
         $(html).appendTo('#messageShow');
-        $('body').stop();
-        $('body').animate({scrollTop:$('body').height()}, 500);
+       		$('#lobby').stop();
+	        $('#lobby').animate({scrollTop:$('#lobby ul').height()}, 500);
         }
     	else{
     	
@@ -95,8 +93,8 @@
         html = html.replace('{MESSAGE}', '<p>'+name+'</p>' + '<p>'+message+'</p>');
 
         $(html).appendTo('#messageShow');
-        $('body').stop();
-        $('body').animate({scrollTop:$('body').height()}, 500);
+       	$('#lobby').stop();
+	    $('#lobby').animate({scrollTop:$('#lobby ul').height()}, 500);
         }
 
     }
@@ -113,12 +111,6 @@
 
     $(document).ready(function() {
     	
-    	$('.messageBody').hide();
-    	
-    	$('.macaotalkview').on('click',function(){
-	    	$('.messageBody').toggle();
-	    	
-    	})
         socket = io.connect(serverURL);
 
         socket.on('connection', function(data) {
